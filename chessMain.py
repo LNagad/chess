@@ -34,10 +34,15 @@ def main():
     screen.fill(p.Color("white"))
     gs = chessEngine.GameState() #gs is our game state, it initialize our chessEngine constructor and creates the variables board, whiteToMove and moveLog so we can have access to It
     # print(gs.board)
+    validmoves = gs.getValidMoves()
+    moveMade = False #flag variable for when a move is made
+
     loadImages() #only do this once, before the while loop
     running = True
     sqSelected = () #square selected var // no square is selected initial, keep track of the last click of the user(tple: (row, col))
     playerClicks = [] #keep track of player clicks (two tuples: [(6, 4), (4, 4)])
+
+
     while running:
         for event in p.event.get():
             if event.type == p.QUIT:
@@ -59,14 +64,24 @@ def main():
                 if len(playerClicks) == 2: #after 2nd click so first is clicking the piece and then 2nd is moving
                     move = chessEngine.Move(playerClicks[0], playerClicks[1], gs.board)
                     print(move.getChessNotation())
-                    gs.makeMove(move)
-                    sqSelected = () #reset user clicks so we can continue making move
-                    playerClicks = []
-            
+
+                    if move in validmoves:
+                        gs.makeMove(move)
+                        moveMade = True
+                        sqSelected = () #reset user clicks so we can continue making move
+                        playerClicks = []
+                    else:
+                        playerClicks = [sqSelected]
+
             #key handlers
             elif event.type == p.KEYDOWN:
                 if event.key == p.K_z: #undo when 'z' is pressed
                     gs.undoMove()
+                    moveMade = True
+        
+        if moveMade:
+            validmoves = gs.getValidMoves()
+            moveMade = False
 
         drawGameState(screen, gs)
         clock.tick(MAX_FPS)
