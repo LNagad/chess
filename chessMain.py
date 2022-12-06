@@ -2,7 +2,7 @@
 This is our main driver file. It will be responsible for handling user input and displaying the 
 current GameState Object
 """
-
+#En la terminal escriban "pip install pygame" para isntalarlo
 import pygame as p
 import chessEngine
 
